@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Valentine?</title>
+
+        <style>
+            :root {
+                --lilac: #c8a2c8;
+                --ink: #2a1742;
+                --soft: #54406a;
+
+                --card1: rgba(255, 255, 255, 0.22);
+                --card2: rgba(255, 255, 255, 0.1);
+                --border: rgba(255, 255, 255, 0.4);
+
+                --heart1: rgba(255, 255, 255, 0.55);
+                --heart2: rgba(255, 61, 139, 0.25);
+            }
+
+            * {
+                box-sizing: border-box;
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+            }
+
+            body {
+                font-family:
+                    ui-rounded,
+                    system-ui,
+                    -apple-system,
+                    Segoe UI,
+                    Roboto,
+                    Arial;
+                background: var(--lilac);
+                overflow: hidden;
+                color: var(--ink);
+            }
+
+            .wrap {
+                height: 100%;
+                display: grid;
+                place-items: center;
+                padding: 22px;
+            }
+
+            .card {
+                width: min(720px, 92vw);
+                background: linear-gradient(180deg, var(--card1), var(--card2));
+                border-radius: 30px;
+                padding: 34px 26px 26px;
+                text-align: center;
+                border: 1px solid var(--border);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 26px 110px rgba(30, 15, 60, 0.18);
+                position: relative;
+            }
+
+            .card::before {
+                content: "";
+                position: absolute;
+                inset: 12px;
+                border: 2px dashed rgba(42, 23, 66, 0.15);
+                border-radius: 24px;
+                pointer-events: none;
+            }
+
+            h1 {
+                margin: 0 0 10px;
+                font-size: clamp(28px, 4.5vw, 46px);
+                transform: rotate(-0.6deg);
+            }
+
+            h1 span {
+                position: relative;
+                display: inline-block;
+            }
+
+            h1 span::after {
+                content: "";
+                position: absolute;
+                left: -3px;
+                right: -3px;
+                bottom: -7px;
+                height: 8px;
+                background: rgba(255, 61, 139, 0.18);
+                border-radius: 999px;
+                transform: rotate(-1deg);
+            }
+
+            .sub {
+                font-size: 14px;
+                color: var(--soft);
+                margin-bottom: 18px;
+            }
+
+            .arena {
+                position: relative;
+                height: 180px;
+                border-radius: 24px;
+                background: rgba(255, 255, 255, 0.07);
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                overflow: hidden;
+            }
+
+            .btn {
+                position: absolute;
+                padding: 14px 20px;
+                border-radius: 999px;
+                border: none;
+                font-size: 16px;
+                font-weight: 800;
+                cursor: pointer;
+                box-shadow: 0 14px 30px rgba(30, 15, 60, 0.18);
+                touch-action: manipulation;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
+
+            .btn.yes {
+                background: linear-gradient(135deg, #ff6fb7, #ff3d8b);
+                color: white;
+                left: 26%;
+                top: 58%;
+                transform: translate(-50%, -50%);
+            }
+
+            .btn.no {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.85),
+                    rgba(255, 255, 255, 0.55)
+                );
+                color: #3b2a52;
+                left: 74%;
+                top: 58%;
+                transform: translate(-50%, -50%);
+            }
+
+            .signature {
+                margin-top: 14px;
+                font-size: 13px;
+                color: rgba(42, 23, 66, 0.65);
+            }
+
+            /* Overlay */
+            .overlay {
+                position: fixed;
+                inset: 0;
+                display: none;
+                place-items: center;
+                background: rgba(20, 10, 40, 0.22);
+                backdrop-filter: blur(10px);
+                z-index: 10;
+            }
+
+            .overlay.show {
+                display: grid;
+            }
+
+            .success {
+                position: relative;
+                background: linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.26),
+                    rgba(255, 255, 255, 0.1)
+                );
+                border-radius: 32px;
+                padding: 34px 26px;
+                width: min(760px, 92vw);
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.42);
+                box-shadow: 0 34px 140px rgba(10, 5, 20, 0.22);
+            }
+
+            .success::before {
+                content: "";
+                position: absolute;
+                inset: 14px;
+                border: 2px dashed rgba(255, 255, 255, 0.18);
+                border-radius: 26px;
+                pointer-events: none;
+            }
+
+            .success h2 {
+                margin: 0 0 10px;
+                font-size: clamp(22px, 3.8vw, 42px);
+                transform: rotate(-0.4deg);
+            }
+
+            .success p {
+                margin: 0;
+                font-size: clamp(16px, 2.2vw, 20px);
+            }
+
+            /* Hearts */
+            .heartLayer {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+            }
+
+            .sketchHeart {
+                position: absolute;
+                width: 120px;
+                height: 120px;
+                opacity: 0.85;
+            }
+
+            .sketchHeart path {
+                fill: none;
+                stroke: var(--heart1);
+                stroke-width: 3.5;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                animation: draw 1.6s ease forwards;
+            }
+
+            .sketchHeart .accent {
+                stroke: var(--heart2);
+                stroke-width: 6;
+                animation: draw 1.9s ease forwards;
+            }
+
+            @keyframes draw {
+                from {
+                    stroke-dashoffset: var(--dash);
+                    opacity: 0;
+                }
+                to {
+                    stroke-dashoffset: 0;
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="wrap">
+            <div class="card">
+                <h1><span>Will you be my valentine?</span></h1>
+                <div class="sub">
+                    i made this for you. hope it makes you smile
+                </div>
+
+                <div class="arena" id="arena">
+                    <button class="btn yes" id="yes">Yes</button>
+                    <button class="btn no" id="no">No</button>
+                </div>
+
+                <div class="signature">— from me to you ✿</div>
+            </div>
+        </div>
+
+        <div class="overlay" id="overlay">
+            <div class="heartLayer" id="hearts"></div>
+            <div class="success">
+                <h2>YOU CHOSE ME?!?! 🥹</h2>
+                <p>
+                    you chose me out of everyone in the whole world??? me???? :)
+                </p>
+            </div>
+        </div>
+
+        <script>
+            const arena = document.getElementById("arena");
+            const noBtn = document.getElementById("no");
+            const yesBtn = document.getElementById("yes");
+            const overlay = document.getElementById("overlay");
+            const hearts = document.getElementById("hearts");
+
+            let ready = false;
+            let dodges = 0;
+
+            function normalizeNo() {
+                const a = arena.getBoundingClientRect();
+                const b = noBtn.getBoundingClientRect();
+                noBtn.style.left = b.left - a.left + "px";
+                noBtn.style.top = b.top - a.top + "px";
+                noBtn.style.transform = "none";
+                ready = true;
+            }
+
+            function dodge() {
+                const a = arena.getBoundingClientRect();
+                const b = noBtn.getBoundingClientRect();
+                const pad = 14;
+
+                const x = pad + Math.random() * (a.width - b.width - pad);
+                const y = pad + Math.random() * (a.height - b.height - pad);
+                const r = Math.random() * 8 - 4;
+
+                noBtn.style.transition =
+                    "left .15s ease, top .15s ease, transform .12s ease";
+                noBtn.style.left = x + "px";
+                noBtn.style.top = y + "px";
+                noBtn.style.transform = `rotate(${r}deg)`;
+            }
+
+            noBtn.addEventListener("pointerdown", (e) => {
+                e.preventDefault();
+                if (!ready) normalizeNo();
+                dodges++;
+                dodge();
+            });
+            noBtn.addEventListener("click", (e) => e.preventDefault());
+
+            window.addEventListener("load", () =>
+                requestAnimationFrame(normalizeNo),
+            );
+
+            const HEART =
+                "M50 82 C20 62 12 48 14 36 C16 24 28 18 38 22 C44 24 48 30 50 34 C52 30 56 24 62 22 C72 18 84 24 86 36 C88 48 80 62 50 82 Z";
+
+            function drawHearts() {
+                hearts.innerHTML = "";
+                for (let i = 0; i < 26; i++) {
+                    const d = document.createElement("div");
+                    d.className = "sketchHeart";
+                    d.style.left = Math.random() * 100 + "vw";
+                    d.style.top = Math.random() * 100 + "vh";
+                    const s = 70 + Math.random() * 140;
+                    d.style.width = d.style.height = s + "px";
+
+                    const svg = document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "svg",
+                    );
+                    svg.setAttribute("viewBox", "0 0 100 100");
+
+                    const p1 = document.createElementNS(
+                        svg.namespaceURI,
+                        "path",
+                    );
+                    const p2 = document.createElementNS(
+                        svg.namespaceURI,
+                        "path",
+                    );
+                    p1.setAttribute("d", HEART);
+                    p2.setAttribute("d", HEART);
+                    p2.classList.add("accent");
+
+                    svg.append(p1, p2);
+                    d.append(svg);
+                    hearts.append(d);
+
+                    const l = p1.getTotalLength();
+                    p1.style.strokeDasharray = l;
+                    p1.style.strokeDashoffset = l;
+                    p1.style.setProperty("--dash", l);
+
+                    const l2 = p2.getTotalLength();
+                    p2.style.strokeDasharray = l2;
+                    p2.style.strokeDashoffset = l2;
+                    p2.style.setProperty("--dash", l2);
+                }
+            }
+
+            yesBtn.addEventListener("click", () => {
+                overlay.classList.add("show");
+                drawHearts();
+            });
+        </script>
+    </body>
+</html>
